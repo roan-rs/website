@@ -1,16 +1,12 @@
-<h1 align="center" id="title">Roan</h1>
+<h1 align="center" id="title">Roan Website</h1>
 
-<p align="center"><img src="https://socialify.git.ci/roan-rs/roan/image?font=Rokkitt&amp;forks=1&amp;issues=1&amp;language=1&amp;name=1&amp;owner=1&amp;pattern=Circuit%20Board&amp;pulls=1&amp;stargazers=1&amp;theme=Auto" alt="project-image"></p>
+<p align="center"><img src="https://socialify.git.ci/roan-rs/website/image?font=Rokkitt&amp;forks=1&amp;issues=1&amp;language=1&amp;name=1&amp;owner=1&amp;pattern=Circuit%20Board&amp;pulls=1&amp;stargazers=1&amp;theme=Auto" alt="project-image"></p>
 
-<h3 id="description" align="center">Interpreted language written in Rust</h3>
+<h3 id="description" align="center">Website and registry for Roan Language</h3>
 
-<h2>🧐 Features</h2>
+<h2>🚀 Overview:</h2>
 
-Here are some of the project's best features:
-
-* Simple syntax inspired by Rust and JavaScript
-* Builtin standard library
-* Easy to use imports/exports
+This is the website and registry for the Roan Language. It is built using the Axum web framework and Diesel ORM.
 
 <h2>🍰 Contribution Guidelines:</h2>
 

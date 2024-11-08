@@ -1,0 +1,14 @@
+[package]
+name = "server"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.93"
+tracing = "0.1.40"
+tracing-subscriber = { version = "=0.3.18", features = ["env-filter", "json"] }
+tokio = { version = "=1.41.1", features = ["net", "signal", "io-std", "io-util", "rt-multi-thread", "macros", "process"] }
+axum = { version = "=0.7.7", features = ["macros", "matched-path"] }
+axum-extra = { version = "=0.9.4", features = ["cookie-signed", "typed-header"] }
+dotenvy = "0.15.7"
+json-subscriber = "0.2.2"

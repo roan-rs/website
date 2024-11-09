@@ -4,6 +4,9 @@ mod app;
 mod router;
 mod errors;
 mod shutdown;
+mod routes;
+mod middleware;
+mod results;
 
 use std::net::SocketAddr;
 use std::sync::Arc;

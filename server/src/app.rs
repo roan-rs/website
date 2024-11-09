@@ -1,14 +1,19 @@
-use axum::extract::State;
+use axum::extract::{FromRef, State};
 use std::net::IpAddr;
 use std::ops::Deref;
 use std::sync::Arc;
-use crate::var::var;
+use crate::var::{required_var, var};
 use anyhow::Result;
 use axum::extract::FromRequestParts;
+use cookie::Key;
+use oauth2::{AuthUrl, ClientId, ClientSecret, TokenUrl};
+use oauth2::basic::BasicClient;
 
 pub struct App {
     pub port: u16,
     pub ip: IpAddr,
+    pub github_auth: BasicClient,
+    pub session_key: Key,
 }
 
 impl App {
@@ -23,10 +28,25 @@ impl App {
 
         let port = var("PORT")?.unwrap_or("3000".to_string()).parse()?;
 
-        Ok(Self { port, ip })
+        let gh_client_id = ClientId::new(required_var("GH_CLIENT_ID")?);
+        let gh_client_secret = ClientSecret::new(required_var("GH_CLIENT_SECRET")?);
+        let session_key = required_var("SESSION_KEY")?;
+
+        Ok(Self {
+            port,
+            ip,
+            github_auth: BasicClient::new(
+                gh_client_id.clone(),
+                Some(gh_client_secret.clone()),
+                AuthUrl::new(String::from("https://github.com/login/oauth/authorize"))?,
+                Some(
+                    TokenUrl::new(String::from("https://github.com/login/oauth/access_token"))?,
+                ),
+            ),
+            session_key: Key::from(session_key.as_bytes()),
+        })
     }
 }
-
 
 #[derive(Clone, FromRequestParts)]
 #[from_request(via(State))]
@@ -37,5 +57,11 @@ impl Deref for AppState {
 
     fn deref(&self) -> &Self::Target {
         &self.0
+    }
+}
+
+impl FromRef<AppState> for Key {
+    fn from_ref(app: &AppState) -> Self {
+        app.session_key.clone()
     }
 }

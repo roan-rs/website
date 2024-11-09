@@ -6,3 +6,11 @@ pub fn var(key: &str) -> anyhow::Result<Option<String>> {
         Err(error) => Err(error.into()),
     }
 }
+
+#[track_caller]
+pub fn required_var(key: &str) -> anyhow::Result<String> {
+    match var(key)? {
+        Some(value) => Ok(value),
+        None => Err(anyhow::anyhow!("Missing required environment variable: {key}")),
+    }
+}

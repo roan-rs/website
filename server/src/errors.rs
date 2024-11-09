@@ -45,3 +45,5 @@ impl IntoResponse for ApiError {
         self.response()
     }
 }
+
+pub type ApiResult<T> = Result<T, ApiError>;

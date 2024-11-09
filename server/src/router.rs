@@ -2,11 +2,15 @@ use std::sync::Arc;
 use axum::http::{Method, StatusCode};
 use axum::response::IntoResponse;
 use axum::Router;
+use axum::routing::get;
 use crate::app::{App, AppState};
 use crate::errors::not_found;
+use crate::middleware::inject_middlewares;
+use crate::routes::auth::callback::authorize;
 
 pub fn build_router(app: AppState) -> Router<()> {
-    let mut router = Router::new();
+    let mut router = Router::new()
+        .route("/api/auth/callback", get(authorize));
 
     router
         .fallback(|method: Method| async move {
@@ -21,5 +25,6 @@ pub fn build_router(app: AppState) -> Router<()> {
 pub fn build_handler(app: Arc<App>) -> Router<()> {
     let app_state = AppState(app);
 
-    build_router(app_state)
+    let router = build_router(app_state.clone());
+    inject_middlewares(app_state, router)
 }

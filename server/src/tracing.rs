@@ -9,7 +9,7 @@ pub fn init() {
     init_with_default_level(LevelFilter::INFO)
 }
 
-fn init_with_default_level(level: LevelFilter) {
+pub fn init_with_default_level(level: LevelFilter) {
     let env_filter = EnvFilter::builder()
         .with_default_directive(level.into())
         .from_env_lossy();

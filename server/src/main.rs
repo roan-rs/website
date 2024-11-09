@@ -7,11 +7,13 @@ mod shutdown;
 mod routes;
 mod middleware;
 mod results;
-mod respose;
+mod response;
 
+use std::env::args;
 use std::net::SocketAddr;
 use std::sync::Arc;
 use ::tracing::{info, warn};
+use tracing_subscriber::filter::LevelFilter;
 use anyhow::Result;
 use axum::ServiceExt;
 use tokio::net::TcpListener;
@@ -20,7 +22,8 @@ use crate::router::{build_handler, build_router};
 use crate::shutdown::shutdown_signal;
 
 fn main() -> Result<()> {
-    tracing::init();
+    let is_debug = args().any(|arg| arg == "--debug");
+    tracing::init_with_default_level(if is_debug { LevelFilter::DEBUG } else { LevelFilter::INFO });
 
     let app = Arc::new(App::from_env()?);
 

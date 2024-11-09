@@ -774,6 +774,8 @@ dependencies = [
  "axum-extra",
  "dotenvy",
  "json-subscriber",
+ "serde",
+ "serde_json",
  "tokio",
  "tracing",
  "tracing-subscriber",

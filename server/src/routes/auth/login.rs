@@ -3,6 +3,7 @@ use oauth2::Scope;
 use serde_json::{json, Value};
 use tracing::debug;
 use crate::app::AppState;
+use crate::json_response;
 use crate::middleware::session::SessionExtension;
 
 pub async fn login(app: AppState, session: SessionExtension) -> Json<Value> {
@@ -14,5 +15,5 @@ pub async fn login(app: AppState, session: SessionExtension) -> Json<Value> {
     session.insert("github_oauth_state".to_string(), state.secret().to_string());
     debug!("Generated OAuth state: {}", state.secret());
 
-    Json(json!({ "url": url.to_string(), "state": state.secret().to_string() }))
+    json_response!({ "url": url.to_string(), "state": state.secret().to_string() })
 }

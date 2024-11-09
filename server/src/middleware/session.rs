@@ -7,7 +7,7 @@ use base64::{engine::general_purpose, Engine};
 use cookie::time::Duration;
 use cookie::{Cookie, SameSite};
 use std::ops::Deref;
-use tokio::sync::RwLock;
+use parking_lot::RwLock;
 
 #[derive(Clone, FromRequestParts)]
 #[from_request(via(Extension))]
@@ -18,18 +18,18 @@ impl SessionExtension {
         Self(Arc::new(RwLock::new(session)))
     }
 
-    pub async fn get(&self, key: &str) -> Option<String> {
-        self.0.read().await.data.get(key).cloned()
+    pub fn get(&self, key: &str) -> Option<String> {
+        self.0.read().data.get(key).cloned()
     }
 
-    pub async fn insert(&self, key: String, value: String) -> Option<String> {
-        let mut session = self.0.write().await;
+    pub fn insert(&self, key: String, value: String) -> Option<String> {
+        let mut session = self.0.write();
         session.dirty = true;
         session.data.insert(key, value)
     }
 
-    pub async fn remove(&self, key: &str) -> Option<String> {
-        let mut session = self.0.write().await;
+    pub fn remove(&self, key: &str) -> Option<String> {
+        let mut session = self.0.write();
         session.dirty = true;
         session.data.remove(key)
     }
@@ -39,7 +39,7 @@ impl Deref for SessionExtension {
     type Target = RwLock<Session>;
 
     fn deref(&self) -> &Self::Target {
-        self.0.as_ref()
+        &self.0
     }
 }
 
@@ -64,8 +64,8 @@ pub async fn handle_session(jar: SignedCookieJar, mut req: Request, next: Next) 
 
     let response = next.run(req).await;
 
-    if session.0.read().await.dirty {
-        let cookie = Cookie::build((Session::COOKIE_NAME, encode(&session.0.read().await.data)))
+    if session.read().dirty {
+        let cookie = Cookie::build((Session::COOKIE_NAME, encode(&session.read().data)))
             .http_only(true)
             .secure(true)
             .same_site(SameSite::Strict)

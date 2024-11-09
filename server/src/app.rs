@@ -43,7 +43,7 @@ impl App {
                     TokenUrl::new(String::from("https://github.com/login/oauth/access_token"))?,
                 ),
             ),
-            session_key: Key::from(session_key.as_bytes()),
+            session_key: Key::derive_from(session_key.as_bytes()),
         })
     }
 }

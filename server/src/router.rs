@@ -6,11 +6,13 @@ use axum::routing::get;
 use crate::app::{App, AppState};
 use crate::errors::not_found;
 use crate::middleware::inject_middlewares;
-use crate::routes::auth::callback::authorize;
+use crate::routes::auth::login::login;
+// use crate::routes::auth::callback::authorize;
 
 pub fn build_router(app: AppState) -> Router<()> {
     let mut router = Router::new()
-        .route("/api/auth/callback", get(authorize));
+        .route("/api/auth/login", get(login));
+        // .route("/api/auth/callback", get(authorize));
 
     router
         .fallback(|method: Method| async move {

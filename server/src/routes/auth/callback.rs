@@ -19,9 +19,9 @@ pub struct AuthorizeQuery {
     state: CsrfToken,
 }
 
-pub async fn authorize(
-    query: AuthorizeQuery,
-    app: AppState,
-    session: SessionExtension,
-    req: Parts,
-) -> ApiResult<Json<User>> {}
+// pub async fn authorize(
+//     query: AuthorizeQuery,
+//     app: AppState,
+//     session: SessionExtension,
+//     req: Parts,
+// ) -> ApiResult<Json<User>> {}

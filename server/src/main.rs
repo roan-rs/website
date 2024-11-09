@@ -3,6 +3,7 @@ pub mod var;
 mod app;
 mod router;
 mod errors;
+mod shutdown;
 
 use std::net::SocketAddr;
 use std::sync::Arc;
@@ -12,6 +13,7 @@ use axum::ServiceExt;
 use tokio::net::TcpListener;
 use crate::app::{App, AppState};
 use crate::router::{build_handler, build_router};
+use crate::shutdown::shutdown_signal;
 
 fn main() -> Result<()> {
     tracing::init();
@@ -34,7 +36,8 @@ fn main() -> Result<()> {
 
         info!("Listening at http://{addr}");
 
-        axum::serve(listener, service).await?;
+        axum::serve(listener, service)
+            .with_graceful_shutdown(shutdown_signal()).await?;
 
         Ok::<(), anyhow::Error>(())
     })?;

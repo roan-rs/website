@@ -1,16 +1,6 @@
 use axum::extract::{FromRequestParts, Query};
-use axum::Json;
-use http::request::Parts;
-use oauth2::reqwest::http_client;
-use oauth2::{AuthorizationCode, CsrfToken, Scope, TokenResponse};
+use oauth2::{AuthorizationCode, CsrfToken};
 use serde::Deserialize;
-use serde_json::{json, Value};
-use tokio::runtime::Handle;
-use tracing_subscriber::fmt::format::json;
-use crate::app::AppState;
-use crate::errors::ApiResult;
-use crate::middleware::session::SessionExtension;
-use crate::results::user::User;
 
 #[derive(Clone, Debug, Deserialize, FromRequestParts)]
 #[from_request(via(Query))]

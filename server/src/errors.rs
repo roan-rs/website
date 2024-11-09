@@ -1,10 +1,14 @@
-use std::borrow::Cow;
-use std::fmt;
-use std::fmt::{Display, Formatter};
-use axum::{Extension, Json};
-use axum::http::StatusCode;
-use axum::response::{IntoResponse, Response};
+use axum::{
+    http::StatusCode,
+    response::{IntoResponse, Response},
+    Json,
+};
 use serde_json::json;
+use std::{
+    borrow::Cow,
+    fmt,
+    fmt::{Display, Formatter},
+};
 use tracing::error;
 
 pub fn custom(status: StatusCode, detail: impl Into<Cow<'static, str>>) -> ApiError {

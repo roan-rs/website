@@ -1,13 +1,9 @@
-use axum::extract::{FromRef, State};
-use std::net::IpAddr;
-use std::ops::Deref;
-use std::sync::Arc;
 use crate::var::{required_var, var};
 use anyhow::Result;
-use axum::extract::FromRequestParts;
+use axum::extract::{FromRef, FromRequestParts, State};
 use cookie::Key;
-use oauth2::{AuthUrl, ClientId, ClientSecret, TokenUrl};
-use oauth2::basic::BasicClient;
+use oauth2::{basic::BasicClient, AuthUrl, ClientId, ClientSecret, TokenUrl};
+use std::{net::IpAddr, ops::Deref, sync::Arc};
 
 pub struct App {
     pub port: u16,
@@ -39,9 +35,9 @@ impl App {
                 gh_client_id.clone(),
                 Some(gh_client_secret.clone()),
                 AuthUrl::new(String::from("https://github.com/login/oauth/authorize"))?,
-                Some(
-                    TokenUrl::new(String::from("https://github.com/login/oauth/access_token"))?,
-                ),
+                Some(TokenUrl::new(String::from(
+                    "https://github.com/login/oauth/access_token",
+                ))?),
             ),
             session_key: Key::derive_from(session_key.as_bytes()),
         })

@@ -11,6 +11,8 @@ pub fn var(key: &str) -> anyhow::Result<Option<String>> {
 pub fn required_var(key: &str) -> anyhow::Result<String> {
     match var(key)? {
         Some(value) => Ok(value),
-        None => Err(anyhow::anyhow!("Missing required environment variable: {key}")),
+        None => Err(anyhow::anyhow!(
+            "Missing required environment variable: {key}"
+        )),
     }
 }

@@ -1,13 +1,13 @@
-use std::{collections::HashMap, sync::Arc};
-use axum::extract::{Extension, FromRequestParts, Request};
-use axum::middleware::Next;
-use axum::response::{IntoResponse, Response};
+use axum::{
+    extract::{Extension, FromRequestParts, Request},
+    middleware::Next,
+    response::{IntoResponse, Response},
+};
 use axum_extra::extract::SignedCookieJar;
 use base64::{engine::general_purpose, Engine};
-use cookie::time::Duration;
-use cookie::{Cookie, SameSite};
-use std::ops::Deref;
+use cookie::{time::Duration, Cookie, SameSite};
 use parking_lot::RwLock;
+use std::{collections::HashMap, ops::Deref, sync::Arc};
 
 #[derive(Clone, FromRequestParts)]
 #[from_request(via(Extension))]
@@ -58,7 +58,10 @@ impl Session {
 }
 
 pub async fn handle_session(jar: SignedCookieJar, mut req: Request, next: Next) -> Response {
-    let data = jar.get(Session::COOKIE_NAME).map(decode).unwrap_or_default();
+    let data = jar
+        .get(Session::COOKIE_NAME)
+        .map(decode)
+        .unwrap_or_default();
     let session = SessionExtension::new(Session::new(data));
     req.extensions_mut().insert(session.clone());
 
@@ -80,16 +83,24 @@ pub async fn handle_session(jar: SignedCookieJar, mut req: Request, next: Next) 
 }
 
 fn decode(cookie: Cookie<'_>) -> HashMap<String, String> {
-    general_purpose::STANDARD.decode(cookie.value().as_bytes()).ok()
+    general_purpose::STANDARD
+        .decode(cookie.value().as_bytes())
+        .ok()
         .and_then(|bytes| {
-            Some(bytes.split(|&b| b == 0xff)
-                .collect::<Vec<_>>()
-                .chunks(2)
-                .filter_map(|pair| match pair {
-                    [key, value] if !key.is_empty() => Some((String::from_utf8_lossy(key).into_owned(), String::from_utf8_lossy(value).into_owned())),
-                    _ => None,
-                })
-                .collect::<HashMap<_, _>>())
+            Some(
+                bytes
+                    .split(|&b| b == 0xff)
+                    .collect::<Vec<_>>()
+                    .chunks(2)
+                    .filter_map(|pair| match pair {
+                        [key, value] if !key.is_empty() => Some((
+                            String::from_utf8_lossy(key).into_owned(),
+                            String::from_utf8_lossy(value).into_owned(),
+                        )),
+                        _ => None,
+                    })
+                    .collect::<HashMap<_, _>>(),
+            )
         })
         .unwrap_or_default()
 }

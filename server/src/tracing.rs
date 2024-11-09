@@ -1,9 +1,6 @@
-use tracing::Level;
-use tracing::log::warn;
-use tracing::Metadata;
-use tracing_subscriber::filter::LevelFilter;
-use tracing_subscriber::{prelude::*, EnvFilter, Layer};
 use crate::var::var;
+use tracing::log::warn;
+use tracing_subscriber::{filter::LevelFilter, prelude::*, EnvFilter, Layer};
 
 pub fn init() {
     init_with_default_level(LevelFilter::INFO)
@@ -33,7 +30,5 @@ pub fn init_with_default_level(level: LevelFilter) {
             .boxed(),
     };
 
-    tracing_subscriber::registry()
-        .with(log_layer)
-        .init();
+    tracing_subscriber::registry().with(log_layer).init();
 }

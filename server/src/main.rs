@@ -1,29 +1,29 @@
+mod app;
+mod errors;
+mod middleware;
+mod response;
+mod results;
+mod router;
+mod routes;
+mod shutdown;
 mod tracing;
 pub mod var;
-mod app;
-mod router;
-mod errors;
-mod shutdown;
-mod routes;
-mod middleware;
-mod results;
-mod response;
 
-use std::env::args;
-use std::net::SocketAddr;
-use std::sync::Arc;
-use ::tracing::{info, warn};
-use tracing_subscriber::filter::LevelFilter;
+use crate::{app::App, router::build_handler, shutdown::shutdown_signal};
+use ::tracing::info;
 use anyhow::Result;
 use axum::ServiceExt;
+use std::{env::args, net::SocketAddr, sync::Arc};
 use tokio::net::TcpListener;
-use crate::app::{App, AppState};
-use crate::router::{build_handler, build_router};
-use crate::shutdown::shutdown_signal;
+use tracing_subscriber::filter::LevelFilter;
 
 fn main() -> Result<()> {
     let is_debug = args().any(|arg| arg == "--debug");
-    tracing::init_with_default_level(if is_debug { LevelFilter::DEBUG } else { LevelFilter::INFO });
+    tracing::init_with_default_level(if is_debug {
+        LevelFilter::DEBUG
+    } else {
+        LevelFilter::INFO
+    });
 
     let app = Arc::new(App::from_env()?);
 
@@ -44,7 +44,8 @@ fn main() -> Result<()> {
         info!("Listening at http://{addr}");
 
         axum::serve(listener, service)
-            .with_graceful_shutdown(shutdown_signal()).await?;
+            .with_graceful_shutdown(shutdown_signal())
+            .await?;
 
         Ok::<(), anyhow::Error>(())
     })?;

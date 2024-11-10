@@ -8,6 +8,7 @@ mod routes;
 mod shutdown;
 mod tracing;
 pub mod var;
+mod db;
 
 use crate::{app::App, router::build_handler, shutdown::shutdown_signal};
 use ::tracing::info;

@@ -4,12 +4,16 @@ use axum::extract::{FromRef, FromRequestParts, State};
 use cookie::Key;
 use oauth2::{basic::BasicClient, AuthUrl, ClientId, ClientSecret, TokenUrl};
 use std::{net::IpAddr, ops::Deref, sync::Arc};
+use diesel_async::pooled_connection::deadpool::Pool;
+use diesel_async::AsyncPgConnection;
+use crate::db::create_db_connection;
 
 pub struct App {
     pub port: u16,
     pub ip: IpAddr,
     pub github_auth: BasicClient,
     pub session_key: Key,
+    pub db: Pool<AsyncPgConnection>,
 }
 
 impl App {
@@ -40,6 +44,7 @@ impl App {
                 ))?),
             ),
             session_key: Key::derive_from(session_key.as_bytes()),
+            db: create_db_connection()?,
         })
     }
 }
